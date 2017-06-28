@@ -1858,6 +1858,7 @@ extern void do_set_cpus_allowed(struct task_struct *p, const struct cpumask *new
 extern int set_cpus_allowed_ptr(struct task_struct *p, const struct cpumask *new_mask);
 extern int dup_user_cpus_ptr(struct task_struct *dst, struct task_struct *src, int node);
 extern void release_user_cpus_ptr(struct task_struct *p);
+extern bool cpupri_check_rt(void);
 #else
 static inline void do_set_cpus_allowed(struct task_struct *p, const struct cpumask *new_mask)
 {
@@ -1877,6 +1878,10 @@ static inline int dup_user_cpus_ptr(struct task_struct *dst, struct task_struct 
 static inline void release_user_cpus_ptr(struct task_struct *p)
 {
 	WARN_ON(p->user_cpus_ptr);
+}
+static inline bool cpupri_check_rt(void)
+{
+	return false;
 }
 #endif
 

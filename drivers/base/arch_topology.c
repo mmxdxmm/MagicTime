@@ -81,17 +81,6 @@ void topology_set_min_freq_scale(const struct cpumask *cpus,
 		per_cpu(arch_min_freq_scale, i) = scale;
 }
 
-DEFINE_PER_CPU(unsigned long, thermal_pressure);
-
-void arch_set_thermal_pressure(struct cpumask *cpus,
-			       unsigned long th_pressure)
-{
-	int cpu;
-
-	for_each_cpu(cpu, cpus)
-		per_cpu(thermal_pressure, cpu) = th_pressure;
-}
-
 static DEFINE_MUTEX(cpu_scale_mutex);
 DEFINE_PER_CPU(unsigned long, cpu_scale) = SCHED_CAPACITY_SCALE;
 

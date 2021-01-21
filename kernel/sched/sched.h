@@ -1048,7 +1048,6 @@ struct rq {
 	unsigned long		cpu_capacity;
 
 	struct callback_head	*balance_callback;
-	unsigned char		balance_push;
 
 	unsigned char		nohz_idle_balance;
 	unsigned char		idle_balance;

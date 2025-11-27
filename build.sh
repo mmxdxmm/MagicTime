@@ -183,17 +183,19 @@ BUILD_DATE=$(date '+%Y-%m-%d_%H-%M-%S')
 
 OUT=out
 
+# Early build
+if [ $LEVEL = 1 ] && [ $TYPE = early ]; then
+    build
+    clear
+fi
+
+# Test builds
 if [ $LEVEL = 1 ] && [ $TYPE = test ]; then
     DEVICE="alioth"
     DESC="POCO F3 build"
     build
     LEVEL=$((LEVEL + 1))
     sed -i "s/LEVEL=.*/LEVEL=$LEVEL/" ../settings.sh
-    clear
-fi
-
-if [ $LEVEL = 1 ] && [ $TYPE = early ]; then
-    build
     clear
 fi
 
@@ -215,6 +217,7 @@ if [ $TYPE = test ]; then
         LEVEL=$((LEVEL + 1))
         sed -i "s/LEVEL=.*/LEVEL=$LEVEL/" ../settings.sh
         clear
+        # RESET!
         git reset --hard HEAD~1
     fi
 
@@ -257,7 +260,8 @@ if [ $TYPE = test ]; then
         sed -i "s/LEVEL=.*/LEVEL=$LEVEL/" ../settings.sh
         clear
 
-        git reset --hard HEAD~4
+        # Return to stock
+        git reset --hard HEAD~2
         clear
     fi
 
@@ -290,6 +294,7 @@ if [ $TYPE = test ]; then
         LEVEL=$((LEVEL + 1))
         sed -i "s/LEVEL=.*/LEVEL=$LEVEL/" ../settings.sh
         clear
+        # RESET!
         git reset --hard HEAD~1
     fi
 
@@ -323,7 +328,8 @@ if [ $TYPE = test ]; then
         DESC="POCO F3 MIUI build 5k battery without susfs"
         build
 
-        git reset --hard HEAD~4
+        # Return to stock
+        git reset --hard HEAD~2
         clear
     fi
 

@@ -225,7 +225,7 @@ if [ $TYPE = test ]; then
         # ksu: Import susfs4ksu v1.5.5 (drivers/kernelsu)
         #
         # But I created a squash revert commit to make things simpler
-        git cherry-pick be75771fc7819f5a3d9e283bea60d94ff272f62b
+        git cherry-pick 3fbfb3a74ee873efaeab2088f8cd508e0cbb0289
         DESC="POCO F3 build without susfs"
         build
         LEVEL=$((LEVEL + 1))
@@ -235,7 +235,7 @@ if [ $TYPE = test ]; then
 
     if [ $LEVEL = 5 ]; then
         if [ $EXTRA = "!4"]; then
-            git cherry-pick be75771fc7819f5a3d9e283bea60d94ff272f62b
+            git cherry-pick 3fbfb3a74ee873efaeab2088f8cd508e0cbb0289
         fi
         DEVICE="pipa"
         DESC="Mi Pad 6 AOSP build without susfs"
@@ -247,7 +247,7 @@ if [ $TYPE = test ]; then
 
     if [ $LEVEL = 6 ]; then
         if [ $EXTRA = "!4"]; then
-            git cherry-pick be75771fc7819f5a3d9e283bea60d94ff272f62b
+            git cherry-pick 3fbfb3a74ee873efaeab2088f8cd508e0cbb0289
         fi
         DEVICE="alioth"
         git cherry-pick 6180281005f4a2ce7ea4895d1e35be47f99b3e11
@@ -294,7 +294,7 @@ if [ $TYPE = test ]; then
     fi
 
     if [ $LEVEL = 10 ]; then
-        git cherry-pick be75771fc7819f5a3d9e283bea60d94ff272f62b
+        git cherry-pick 3fbfb3a74ee873efaeab2088f8cd508e0cbb0289
         DESC="POCO F3 MIUI build without susfs"
         build
         LEVEL=$((LEVEL + 1))
@@ -304,7 +304,7 @@ if [ $TYPE = test ]; then
 
     if [ $LEVEL = 11 ]; then
         if [ $EXTRA = "!10" ]; then
-            git cherry-pick be75771fc7819f5a3d9e283bea60d94ff272f62b
+            git cherry-pick 3fbfb3a74ee873efaeab2088f8cd508e0cbb0289
         fi
         DEVICE="pipa"
         DESC="Mi Pad 6 MIUI build without susfs"
@@ -316,7 +316,7 @@ if [ $TYPE = test ]; then
 
     if [ $LEVEL = 12 ]; then
         if [ $EXTRA = "!10" ]; then
-            git cherry-pick be75771fc7819f5a3d9e283bea60d94ff272f62b
+            git cherry-pick 3fbfb3a74ee873efaeab2088f8cd508e0cbb0289
         fi
         DEVICE="alioth"
         git cherry-pick 6180281005f4a2ce7ea4895d1e35be47f99b3e11

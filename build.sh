@@ -211,7 +211,7 @@ if [ $TYPE = test ]; then
 
     if [ $LEVEL = 3 ]; then
         DEVICE="alioth"
-        git cherry-pick 6180281005f4a2ce7ea4895d1e35be47f99b3e11
+        git cherry-pick 6bc66fdc9f24cb9202e4fe418e0fafda105304ff
         DESC="POCO F3 build 5k battery"
         build
         LEVEL=$((LEVEL + 1))
@@ -253,7 +253,7 @@ if [ $TYPE = test ]; then
             git cherry-pick 3fbfb3a74ee873efaeab2088f8cd508e0cbb0289
         fi
         DEVICE="alioth"
-        git cherry-pick 6180281005f4a2ce7ea4895d1e35be47f99b3e11
+        git cherry-pick 6bc66fdc9f24cb9202e4fe418e0fafda105304ff
         DESC="POCO F3 build 5k battery without susfs"
         build
         LEVEL=$((LEVEL + 1))
@@ -288,7 +288,7 @@ if [ $TYPE = test ]; then
 
     if [ $LEVEL = 9 ]; then
         DEVICE="alioth"
-        git cherry-pick 6180281005f4a2ce7ea4895d1e35be47f99b3e11
+        git cherry-pick 6bc66fdc9f24cb9202e4fe418e0fafda105304ff
         DESC="POCO F3 MIUI build 5k battery"
         build
         LEVEL=$((LEVEL + 1))
@@ -324,7 +324,7 @@ if [ $TYPE = test ]; then
             git cherry-pick 3fbfb3a74ee873efaeab2088f8cd508e0cbb0289
         fi
         DEVICE="alioth"
-        git cherry-pick 6180281005f4a2ce7ea4895d1e35be47f99b3e11
+        git cherry-pick 6bc66fdc9f24cb9202e4fe418e0fafda105304ff
         DESC="POCO F3 MIUI build 5k battery without susfs"
         build
 

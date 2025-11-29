@@ -17,10 +17,11 @@ else
     fi
 fi
 
-#yes | tar -xvf electron-binutils-2.41.tar.xz
+#wget -nv -O binutils.zip https://github.com/mmxdxmm/binutils/releases/download/20251013/x86-64_binutils-2.33.1.zip
+#yes | unzip binutils.zip
 yes | unzip change.zip
 TOOLCHAIN_PATH=$PWD/clang/bin
-#BINUTILS_PATH=$PWD/electron-binutils-2.41/bin
+#BINUTILS_PATH=$PWD/binutils/bin
 GIT_COMMIT_ID="mmxdxmm"
 
 TARGET_DEVICE=$1
@@ -182,7 +183,7 @@ scripts/config --file out/.config \
     -e CONFIG_THINLTO \
     -d CONFIG_CFI_CLANG
 
-make LD="$set_LD" HOSTLD="$set_HOSTLD" CC="$set_C" CXX="$set_C" HOSTCC="$set_HOSTC" HOSTCXX="$set_HOSTC" $MAKE_ARGS $MAKE_ARGS -j$(nproc)
+make LD="$set_LD" HOSTLD="$set_HOSTLD" CC="$set_C" CXX="$set_C" HOSTCC="$set_HOSTC" HOSTCXX="$set_HOSTC" $MAKE_ARGS -j$(nproc)
 
 
 

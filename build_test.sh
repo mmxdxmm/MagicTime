@@ -198,22 +198,12 @@ find out/arch/arm64/boot/dts -name '*.dtb' -exec cat {} + >out/arch/arm64/boot/d
 
 
 
-rm -rf anykernel/Image
+rm -rf anykernel/Image*
 rm -rf anykernel/dtb
 rm -rf anykernel/dtbo.img
 
-# Patch for SukiSU KPM support. 
-if [ $KSU_ENABLE -eq 1 ]; then
-    cd out/arch/arm64/boot/
-    wget -nv -O patch_linux https://github.com/mmxdxmm/SukiSU_KernelPatch_patch/releases/download/v0.12.0/patch_linux
-    chmod +x patch_linux
-    ./patch_linux
-    rm Image
-    mv oImage Image
-    cd -
-fi
 
-cp out/arch/arm64/boot/Image anykernel/
+cp out/arch/arm64/boot/Image* anykernel/
 cp out/arch/arm64/boot/dtb anykernel/
 cp out/arch/arm64/boot/dtbo.img anykernel/
 

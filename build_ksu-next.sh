@@ -16,8 +16,8 @@ else
     fi
 fi
 
+#yes | unzip change.zip
 #yes | tar -xvf electron-binutils-2.41.tar.xz
-yes | unzip change.zip
 TOOLCHAIN_PATH=$PWD/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin
 #BINUTILS_PATH=$PWD/electron-binutils-2.41/bin
 GIT_COMMIT_ID="mmxdxmm"
@@ -87,7 +87,7 @@ clang --version $CFLAGS
 KSU_ZIP_STR=NoKernelSU
 if [ "$2" == "ksu" ]; then
     KSU_ENABLE=1
-    KSU_ZIP_STR=SukiSU-Ultra
+    KSU_ZIP_STR=KSU-Next
 else
     KSU_ENABLE=0
 fi
@@ -95,12 +95,9 @@ fi
 
 echo "TARGET_DEVICE: $TARGET_DEVICE"
 
-rm -rf drivers/kernelsu
-wget -O setup.sh https://raw.githubusercontent.com/mmxdxmm/SukiSU-Ultra/susfs-1.5.5/kernel/setup.sh && bash setup.sh --cleanup
 
 if [ $KSU_ENABLE -eq 1 ]; then
     echo "KSU is enabled"
-    curl -LSs "https://raw.githubusercontent.com/mmxdxmm/SukiSU-Ultra/susfs-1.5.5/kernel/setup.sh" | bash -s susfs-1.5.5
     sed -i '/config KSU/,/help/{/select OVERLAY_FS/d}' arch/arm64/Kconfig
 else
     echo "KSU is disabled"
@@ -136,13 +133,22 @@ make LD="$set_LD" HOSTLD="$set_HOSTLD" CC="$set_C" CXX="$set_C" HOSTCC="$set_HOS
 if [ $KSU_ENABLE -eq 1 ]; then
     scripts/config --file out/.config \
     -e KSU \
-    -e KPM \
-    -e KSU_MANUAL_HOOK \
     -e KSU_SUSFS \
+    -e KSU_SUSFS_HAS_MAGIC_MOUNT \
+    -e KSU_SUSFS_SUS_PATH \
+    -e KSU_SUSFS_SUS_MOUNT \
+    -e KSU_SUSFS_AUTO_ADD_SUS_KSU_DEFAULT_MOUNT \
+    -e KSU_SUSFS_AUTO_ADD_SUS_BIND_MOUNT \
+    -e KSU_SUSFS_SUS_KSTAT \
     -e KSU_SUSFS_SUS_OVERLAYFS \
-    -e CONFIG_KSU_SUSFS_SUS_SU \
-    -e CONFIG_KALLSYMS \
-    -e CONFIG_KALLSYMS_ALL
+    -e KSU_SUSFS_TRY_UMOUNT \
+    -e KSU_SUSFS_AUTO_ADD_TRY_UMOUNT_FOR_BIND_MOUNT \
+    -e KSU_SUSFS_SPOOF_UNAME \
+    -e KSU_SUSFS_ENABLE_LOG \
+    -e KSU_SUSFS_HIDE_KSU_SUSFS_SYMBOLS \
+    -e KSU_SUSFS_SPOOF_CMDLINE_OR_BOOTCONFIG \
+    -e KSU_SUSFS_OPEN_REDIRECT \
+    -e KSU_SUSFS_SUS_SU
 else
     scripts/config --file out/.config -d KSU
 fi
@@ -179,9 +185,11 @@ scripts/config --file out/.config \
     -e CONFIG_LD_DEAD_CODE_DATA_ELIMINATION \
     -e CONFIG_CPU_IDLE_GOV_TEO \
     -e CONFIG_THINLTO \
-    -d CONFIG_CFI_CLANG
+    -d CONFIG_CFI_CLANG \
+    -e CONFIG_KALLSYMS \
+    -e CONFIG_KALLSYMS_ALL
 
-make LD="$set_LD" HOSTLD="$set_HOSTLD" CC="$set_C" CXX="$set_C" HOSTCC="$set_HOSTC" HOSTCXX="$set_HOSTC" $MAKE_ARGS $MAKE_ARGS -j$(nproc)
+make LD="$set_LD" HOSTLD="$set_HOSTLD" CC="$set_C" CXX="$set_C" HOSTCC="$set_HOSTC" HOSTCXX="$set_HOSTC" $MAKE_ARGS -j$(nproc)
 
 
 
@@ -202,15 +210,15 @@ rm -rf anykernel/dtb
 rm -rf anykernel/dtbo.img
 
 # Patch for SukiSU KPM support. 
-if [ $KSU_ENABLE -eq 1 ]; then
-    cd out/arch/arm64/boot/
-    wget -nv -O patch_linux https://github.com/mmxdxmm/SukiSU_KernelPatch_patch/releases/download/v0.12.0/patch_linux
-    chmod +x patch_linux
-    ./patch_linux
-    rm Image
-    mv oImage Image
-    cd -
-fi
+#if [ $KSU_ENABLE -eq 1 ]; then
+#    cd out/arch/arm64/boot/
+#    wget https://github.com/mmxdxmm/SukiSU_KernelPatch_patch/releases/download/v0.12.0/patch_linux
+#    chmod +x patch_linux
+#    ./patch_linux
+#    rm Image
+#    mv oImage Image
+#    cd -
+#fi
 
 cp out/arch/arm64/boot/Image anykernel/
 cp out/arch/arm64/boot/dtb anykernel/

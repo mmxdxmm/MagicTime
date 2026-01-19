@@ -89,7 +89,7 @@ clang --version $CFLAGS
 KSU_ZIP_STR=NoKernelSU
 if [ "$2" == "ksu" ]; then
     KSU_ENABLE=1
-    KSU_ZIP_STR=SukiSU-Ultra
+    KSU_ZIP_STR=KernelSU-Next
 else
     KSU_ENABLE=0
 fi
@@ -98,7 +98,7 @@ fi
 echo "TARGET_DEVICE: $TARGET_DEVICE"
 
 rm -rf drivers/kernelsu
-wget -O setup.sh https://raw.githubusercontent.com/SukiSU-Ultra/SukiSU-Ultra/main/kernel/setup.sh && bash setup.sh --cleanup
+wget -O setup.sh https://raw.githubusercontent.com/KernelSU-Next/KernelSU-Next/next/kernel/setup.sh && bash setup.sh --cleanup
 
 if [ $KSU_ENABLE -eq 1 ]; then
     echo "KSU is enabled"

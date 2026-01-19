@@ -19,7 +19,7 @@ fi
 
 #wget -nv -O binutils.zip https://github.com/mmxdxmm/binutils/releases/download/20251013/x86-64_binutils-2.33.1.zip
 #yes | unzip binutils.zip
-yes | unzip change.zip
+yes | unzip change2.zip
 TOOLCHAIN_PATH=$PWD/clang/bin
 #BINUTILS_PATH=$PWD/binutils/bin
 GIT_COMMIT_ID="mmxdxmm"
@@ -102,7 +102,7 @@ wget -O setup.sh https://raw.githubusercontent.com/SukiSU-Ultra/SukiSU-Ultra/mai
 
 if [ $KSU_ENABLE -eq 1 ]; then
     echo "KSU is enabled"
-    curl -LSs "https://raw.githubusercontent.com/SukiSU-Ultra/SukiSU-Ultra/main/kernel/setup.sh" | bash -s susfs-main
+    curl -LSs "https://raw.githubusercontent.com/SukiSU-Ultra/SukiSU-Ultra/main/kernel/setup.sh" | bash -s nongki
     sed -i '/config KSU/,/help/{/select OVERLAY_FS/d}' arch/arm64/Kconfig
 else
     echo "KSU is disabled"
@@ -138,13 +138,7 @@ make LD="$set_LD" HOSTLD="$set_HOSTLD" CC="$set_C" CXX="$set_C" HOSTCC="$set_HOS
 if [ $KSU_ENABLE -eq 1 ]; then
     scripts/config --file out/.config \
     -e KSU \
-    -e KPM \
-    -e KSU_MANUAL_HOOK \
-    -e KSU_SUSFS \
-    -e KSU_SUSFS_SUS_OVERLAYFS \
-    -e CONFIG_KSU_SUSFS_SUS_SU \
-    -e CONFIG_KALLSYMS \
-    -e CONFIG_KALLSYMS_ALL
+    -e KPM
 else
     scripts/config --file out/.config -d KSU
 fi

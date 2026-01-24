@@ -98,11 +98,11 @@ fi
 echo "TARGET_DEVICE: $TARGET_DEVICE"
 
 rm -rf drivers/kernelsu
-wget -nv -O setup.sh https://raw.githubusercontent.com/SukiSU-Ultra/SukiSU-Ultra/main/kernel/setup.sh && bash setup.sh --cleanup
+wget -nv -O setup.sh https://raw.githubusercontent.com/KernelSU-Next/KernelSU-Next/next/kernel/setup.sh && bash setup.sh --cleanup
 
 if [ $KSU_ENABLE -eq 1 ]; then
     echo "KSU is enabled"
-    curl -LSs "https://raw.githubusercontent.com/SukiSU-Ultra/SukiSU-Ultra/main/kernel/setup.sh" | bash -s v3.2.0
+    curl -LSs "https://raw.githubusercontent.com/KernelSU-Next/KernelSU-Next/next/kernel/setup.sh" | bash -s v1.1.1
     sed -i '/config KSU/,/help/{/select OVERLAY_FS/d}' arch/arm64/Kconfig
 else
     echo "KSU is disabled"
@@ -137,8 +137,7 @@ make LD="$set_LD" HOSTLD="$set_HOSTLD" CC="$set_C" CXX="$set_C" HOSTCC="$set_HOS
 
 if [ $KSU_ENABLE -eq 1 ]; then
     scripts/config --file out/.config \
-    -e KSU \
-    -e KPM
+    -e KSU
 else
     scripts/config --file out/.config -d KSU
 fi
@@ -198,15 +197,15 @@ rm -rf anykernel/dtb
 rm -rf anykernel/dtbo.img
 
 # Patch for SukiSU KPM support. 
-if [ $KSU_ENABLE -eq 1 ]; then
-    cd out/arch/arm64/boot/
-    wget -nv -O patch_linux https://github.com/SukiSU-Ultra/SukiSU_KernelPatch_patch/releases/download/0.12.5/patch_linux
-    chmod +x patch_linux
-    ./patch_linux
-    rm Image
-    mv oImage Image
-    cd -
-fi
+#if [ $KSU_ENABLE -eq 1 ]; then
+#    cd out/arch/arm64/boot/
+#    wget -nv -O patch_linux https://github.com/SukiSU-Ultra/SukiSU_KernelPatch_patch/releases/download/0.12.5/patch_linux
+#    chmod +x patch_linux
+#    ./patch_linux
+#    rm Image
+#    mv oImage Image
+#    cd -
+#fi
 
 cp out/arch/arm64/boot/Image anykernel/
 cp out/arch/arm64/boot/dtb anykernel/

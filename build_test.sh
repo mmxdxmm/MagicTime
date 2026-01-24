@@ -102,7 +102,7 @@ wget -nv -O setup.sh https://raw.githubusercontent.com/SukiSU-Ultra/SukiSU-Ultra
 
 if [ $KSU_ENABLE -eq 1 ]; then
     echo "KSU is enabled"
-    curl -LSs "https://raw.githubusercontent.com/SukiSU-Ultra/SukiSU-Ultra/main/kernel/setup.sh" | bash -s v4.0.0
+    curl -LSs "https://raw.githubusercontent.com/SukiSU-Ultra/SukiSU-Ultra/main/kernel/setup.sh" | bash -s v3.2.0
     sed -i '/config KSU/,/help/{/select OVERLAY_FS/d}' arch/arm64/Kconfig
 else
     echo "KSU is disabled"

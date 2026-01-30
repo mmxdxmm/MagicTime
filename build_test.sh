@@ -57,7 +57,7 @@ echo "CCACHE_DIR: [$CCACHE_DIR]"
 
 MAKE_ARGS="ARCH=arm64 SUBARCH=arm64 O=out LVM=1 LLVM_IAS=1 AR=llvm-ar NM=llvm-nm STRIP=llvm-strip OBJCOPY=llvm-objcopy OBJDUMP=llvm-objdump HOSTAR=llvm-ar"
 set_C="ccache clang --target=aarch64-linux-musl -O3 -march=armv8.2-a+lse+crypto+dotprod -mcpu=cortex-a77 -flto=thin -Wno-error -ffunction-sections -fdata-sections"
-set_HOSTC="ccache clang -O3 -flto=thin -Wno-error -ffunction-sections -fdata-sections"
+set_HOSTC="ccache clang -v -O3 -flto=thin -Wno-error -ffunction-sections -fdata-sections"
 set_LD="ld.lld --strip-debug -O3 --plugin-opt=O3"
 set_HOSTLD="ld.lld --strip-debug --gc-sections -O3 --plugin-opt=O3"
 
@@ -89,7 +89,7 @@ clang --version $CFLAGS
 KSU_ZIP_STR=NoKernelSU
 if [ "$2" == "ksu" ]; then
     KSU_ENABLE=1
-    KSU_ZIP_STR=KernelSU-Next
+    KSU_ZIP_STR=SukiSU-Ultra
 else
     KSU_ENABLE=0
 fi
@@ -98,11 +98,11 @@ fi
 echo "TARGET_DEVICE: $TARGET_DEVICE"
 
 rm -rf drivers/kernelsu
-wget -nv -O setup.sh https://raw.githubusercontent.com/KernelSU-Next/KernelSU-Next/next/kernel/setup.sh && bash setup.sh --cleanup
+wget -O setup.sh https://raw.githubusercontent.com/mmxdxmm/SukiSU-Ultra/v3.2.0/kernel/setup.sh && bash setup.sh --cleanup
 
 if [ $KSU_ENABLE -eq 1 ]; then
     echo "KSU is enabled"
-    curl -LSs "https://raw.githubusercontent.com/KernelSU-Next/KernelSU-Next/next/kernel/setup.sh" | bash -s v1.1.1
+    curl -LSs "https://raw.githubusercontent.com/mmxdxmm/SukiSU-Ultra/v3.2.0/kernel/setup.sh" | bash -s v3.2.0
     sed -i '/config KSU/,/help/{/select OVERLAY_FS/d}' arch/arm64/Kconfig
 else
     echo "KSU is disabled"
@@ -137,7 +137,8 @@ make LD="$set_LD" HOSTLD="$set_HOSTLD" CC="$set_C" CXX="$set_C" HOSTCC="$set_HOS
 
 if [ $KSU_ENABLE -eq 1 ]; then
     scripts/config --file out/.config \
-    -e KSU
+    -e KSU \
+    -e KPM
 else
     scripts/config --file out/.config -d KSU
 fi
@@ -197,15 +198,15 @@ rm -rf anykernel/dtb
 rm -rf anykernel/dtbo.img
 
 # Patch for SukiSU KPM support. 
-#if [ $KSU_ENABLE -eq 1 ]; then
-#    cd out/arch/arm64/boot/
-#    wget -nv -O patch_linux https://github.com/SukiSU-Ultra/SukiSU_KernelPatch_patch/releases/download/0.12.5/patch_linux
-#    chmod +x patch_linux
-#    ./patch_linux
-#    rm Image
-#    mv oImage Image
-#    cd -
-#fi
+if [ $KSU_ENABLE -eq 1 ]; then
+    cd out/arch/arm64/boot/
+    wget -nv -O patch_linux https://github.com/mmxdxmm/SukiSU_KernelPatch_patch/releases/download/v0.12.0/patch_linux
+    chmod +x patch_linux
+    ./patch_linux
+    rm Image
+    mv oImage Image
+    cd -
+fi
 
 cp out/arch/arm64/boot/Image anykernel/
 cp out/arch/arm64/boot/dtb anykernel/

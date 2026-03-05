@@ -17,11 +17,10 @@ else
     fi
 fi
 
-#wget -nv -O binutils.zip https://github.com/mmxdxmm/binutils/releases/download/20251013/x86-64_binutils-2.33.1.zip
-#yes | unzip binutils.zip
-yes | unzip change2.zip
+#yes | tar -xvf electron-binutils-2.41.tar.xz
+yes | unzip change.zip
 TOOLCHAIN_PATH=$PWD/clang/bin
-#BINUTILS_PATH=$PWD/binutils/bin
+#BINUTILS_PATH=$PWD/electron-binutils-2.41/bin
 GIT_COMMIT_ID="mmxdxmm"
 
 TARGET_DEVICE=$1
@@ -56,7 +55,7 @@ echo "CCACHE_DIR: [$CCACHE_DIR]"
 
 
 MAKE_ARGS="ARCH=arm64 SUBARCH=arm64 O=out LVM=1 LLVM_IAS=1 AR=llvm-ar NM=llvm-nm STRIP=llvm-strip OBJCOPY=llvm-objcopy OBJDUMP=llvm-objdump HOSTAR=llvm-ar"
-set_C="ccache clang --target=aarch64-linux-musl -O3 -march=armv8.2-a+lse+crypto+dotprod -mcpu=cortex-a77 -flto=thin -Wno-error -ffunction-sections -fdata-sections"
+set_C="ccache clang --target=aarch64-linux-gnu -O3 -march=armv8.2-a+lse+crypto+dotprod -mcpu=cortex-a77 -flto=thin -Wno-error -ffunction-sections -fdata-sections"
 set_HOSTC="ccache clang -O3 -flto=thin -Wno-error -ffunction-sections -fdata-sections"
 set_LD="ld.lld --strip-debug -O3 --plugin-opt=O3"
 set_HOSTLD="ld.lld --strip-debug --gc-sections -O3 --plugin-opt=O3"
@@ -98,11 +97,11 @@ fi
 echo "TARGET_DEVICE: $TARGET_DEVICE"
 
 rm -rf drivers/kernelsu
-wget -O setup.sh https://raw.githubusercontent.com/mmxdxmm/SukiSU-Ultra/v3.2.0/kernel/setup.sh && bash setup.sh --cleanup
+wget -O setup.sh https://raw.githubusercontent.com/mmxdxmm/SukiSU-Ultra/susfs-1.5.5/kernel/setup.sh && bash setup.sh --cleanup
 
 if [ $KSU_ENABLE -eq 1 ]; then
     echo "KSU is enabled"
-    curl -LSs "https://raw.githubusercontent.com/mmxdxmm/SukiSU-Ultra/v3.2.0/kernel/setup.sh" | bash -s v3.2.0
+    curl -LSs "https://raw.githubusercontent.com/mmxdxmm/SukiSU-Ultra/susfs-1.5.5/kernel/setup.sh" | bash -s susfs-1.5.5
     sed -i '/config KSU/,/help/{/select OVERLAY_FS/d}' arch/arm64/Kconfig
 else
     echo "KSU is disabled"
@@ -138,7 +137,13 @@ make LD="$set_LD" HOSTLD="$set_HOSTLD" CC="$set_C" CXX="$set_C" HOSTCC="$set_HOS
 if [ $KSU_ENABLE -eq 1 ]; then
     scripts/config --file out/.config \
     -e KSU \
-    -e KPM
+    -e KPM \
+    -e KSU_MANUAL_HOOK \
+    -e KSU_SUSFS \
+    -e KSU_SUSFS_SUS_OVERLAYFS \
+    -e CONFIG_KSU_SUSFS_SUS_SU \
+    -e CONFIG_KALLSYMS \
+    -e CONFIG_KALLSYMS_ALL
 else
     scripts/config --file out/.config -d KSU
 fi
@@ -177,7 +182,7 @@ scripts/config --file out/.config \
     -e CONFIG_THINLTO \
     -d CONFIG_CFI_CLANG
 
-make LD="$set_LD" HOSTLD="$set_HOSTLD" CC="$set_C" CXX="$set_C" HOSTCC="$set_HOSTC" HOSTCXX="$set_HOSTC" $MAKE_ARGS -j$(nproc)
+make LD="$set_LD" HOSTLD="$set_HOSTLD" CC="$set_C" CXX="$set_C" HOSTCC="$set_HOSTC" HOSTCXX="$set_HOSTC" $MAKE_ARGS $MAKE_ARGS -j$(nproc) Image dtbs Image-dtb
 
 
 
@@ -188,29 +193,29 @@ else
     exit 1
 fi
 
-echo "Generating [out/arch/arm64/boot/dtb]......"
-find out/arch/arm64/boot/dts -name '*.dtb' -exec cat {} + >out/arch/arm64/boot/dtb
+#echo "Generating [out/arch/arm64/boot/dtb]......"
+#find out/arch/arm64/boot/dts -name '*.dtb' -exec cat {} + >out/arch/arm64/boot/dtb
 
 
 
-rm -rf anykernel/Image
+rm -rf anykernel/Image*
 rm -rf anykernel/dtb
 rm -rf anykernel/dtbo.img
 
 # Patch for SukiSU KPM support. 
-if [ $KSU_ENABLE -eq 1 ]; then
-    cd out/arch/arm64/boot/
-    wget -nv -O patch_linux https://github.com/mmxdxmm/SukiSU_KernelPatch_patch/releases/download/v0.12.0/patch_linux
-    chmod +x patch_linux
-    ./patch_linux
-    rm Image
-    mv oImage Image
-    cd -
-fi
+#if [ $KSU_ENABLE -eq 1 ]; then
+#    cd out/arch/arm64/boot/
+#    wget -nv -O patch_linux https://github.com/mmxdxmm/SukiSU_KernelPatch_patch/releases/download/v0.12.0/patch_linux
+#    chmod +x patch_linux
+#    ./patch_linux
+#    rm Image
+#    mv oImage Image
+#    cd -
+#fi
 
-cp out/arch/arm64/boot/Image anykernel/
-cp out/arch/arm64/boot/dtb anykernel/
-cp out/arch/arm64/boot/dtbo.img anykernel/
+cp out/arch/arm64/boot/Image-dtb anykernel/
+#cp out/arch/arm64/boot/dtb anykernel/
+#cp out/arch/arm64/boot/dtbo.img anykernel/
 
 echo "Build finished."
 

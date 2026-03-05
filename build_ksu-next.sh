@@ -54,8 +54,8 @@ echo "CCACHE_DIR: [$CCACHE_DIR]"
 
 
 MAKE_ARGS="ARCH=arm64 SUBARCH=arm64 O=out LVM=1 LLVM_IAS=1 AR=llvm-ar NM=llvm-nm STRIP=llvm-strip OBJCOPY=llvm-objcopy OBJDUMP=llvm-objdump HOSTAR=llvm-ar"
-set_C="ccache clang --target=aarch64-linux-musl -Os -march=armv8.2-a+lse+crypto+dotprod -mcpu=cortex-a77 -flto=thin -Wno-error -ffunction-sections -fdata-sections"
-set_HOSTC="ccache clang -Os -flto=thin -Wno-error -ffunction-sections -fdata-sections"
+set_C="ccache clang --target=aarch64-linux-gnu -O3 -march=armv8.2-a+lse+crypto+dotprod -mcpu=cortex-a77 -flto=thin -Wno-error -ffunction-sections -fdata-sections"
+set_HOSTC="ccache clang -O3 -flto=thin -Wno-error -ffunction-sections -fdata-sections"
 set_LD="ld.lld --strip-debug -O3 --plugin-opt=O3"
 set_HOSTLD="ld.lld --strip-debug --gc-sections -O3 --plugin-opt=O3"
 
@@ -189,7 +189,7 @@ scripts/config --file out/.config \
     -e CONFIG_KALLSYMS \
     -e CONFIG_KALLSYMS_ALL
 
-make LD="$set_LD" HOSTLD="$set_HOSTLD" CC="$set_C" CXX="$set_C" HOSTCC="$set_HOSTC" HOSTCXX="$set_HOSTC" $MAKE_ARGS -j$(nproc)
+make LD="$set_LD" HOSTLD="$set_HOSTLD" CC="$set_C" CXX="$set_C" HOSTCC="$set_HOSTC" HOSTCXX="$set_HOSTC" $MAKE_ARGS -j$(nproc) Image dtbs Image-dtb
 
 
 
@@ -200,12 +200,12 @@ else
     exit 1
 fi
 
-echo "Generating [out/arch/arm64/boot/dtb]......"
-find out/arch/arm64/boot/dts -name '*.dtb' -exec cat {} + >out/arch/arm64/boot/dtb
+#echo "Generating [out/arch/arm64/boot/dtb]......"
+#find out/arch/arm64/boot/dts -name '*.dtb' -exec cat {} + >out/arch/arm64/boot/dtb
 
 
 
-rm -rf anykernel/Image
+rm -rf anykernel/Image*
 rm -rf anykernel/dtb
 rm -rf anykernel/dtbo.img
 
@@ -220,9 +220,9 @@ rm -rf anykernel/dtbo.img
 #    cd -
 #fi
 
-cp out/arch/arm64/boot/Image anykernel/
-cp out/arch/arm64/boot/dtb anykernel/
-cp out/arch/arm64/boot/dtbo.img anykernel/
+cp out/arch/arm64/boot/Image-dtb anykernel/
+#cp out/arch/arm64/boot/dtb anykernel/
+#cp out/arch/arm64/boot/dtbo.img anykernel/
 
 echo "Build finished."
 

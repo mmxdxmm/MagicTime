@@ -207,7 +207,6 @@ if [ $KSU_ENABLE -eq 1 ]; then
     chmod +x patch_linux
     ./patch_linux
     mv Image Image.bak
-    rm Image
     mv oImage Image
     cd -
 fi

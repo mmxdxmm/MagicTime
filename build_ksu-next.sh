@@ -189,7 +189,7 @@ scripts/config --file out/.config \
     -e CONFIG_KALLSYMS \
     -e CONFIG_KALLSYMS_ALL
 
-make LD="$set_LD" HOSTLD="$set_HOSTLD" CC="$set_C" CXX="$set_C" HOSTCC="$set_HOSTC" HOSTCXX="$set_HOSTC" $MAKE_ARGS -j$(nproc) Image dtbs Image-dtb
+make LD="$set_LD" HOSTLD="$set_HOSTLD" CC="$set_C" CXX="$set_C" HOSTCC="$set_HOSTC" HOSTCXX="$set_HOSTC" $MAKE_ARGS -j$(nproc)
 
 
 
@@ -200,8 +200,8 @@ else
     exit 1
 fi
 
-#echo "Generating [out/arch/arm64/boot/dtb]......"
-#find out/arch/arm64/boot/dts -name '*.dtb' -exec cat {} + >out/arch/arm64/boot/dtb
+echo "Generating [out/arch/arm64/boot/dtb]......"
+find out/arch/arm64/boot/dts -name '*.dtb' -exec cat {} + >out/arch/arm64/boot/dtb
 
 
 
@@ -220,9 +220,9 @@ rm -rf anykernel/dtbo.img
 #    cd -
 #fi
 
-cp out/arch/arm64/boot/Image-dtb anykernel/
-#cp out/arch/arm64/boot/dtb anykernel/
-#cp out/arch/arm64/boot/dtbo.img anykernel/
+cp out/arch/arm64/boot/Image anykernel/
+cp out/arch/arm64/boot/dtb anykernel/
+cp out/arch/arm64/boot/dtbo.img anykernel/
 
 echo "Build finished."
 

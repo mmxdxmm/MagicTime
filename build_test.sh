@@ -182,7 +182,7 @@ scripts/config --file out/.config \
     -e CONFIG_THINLTO \
     -d CONFIG_CFI_CLANG
 
-make LD="$set_LD" HOSTLD="$set_HOSTLD" CC="$set_C" CXX="$set_C" HOSTCC="$set_HOSTC" HOSTCXX="$set_HOSTC" $MAKE_ARGS $MAKE_ARGS -j$(nproc) Image dtbs Image-dtb
+make LD="$set_LD" HOSTLD="$set_HOSTLD" CC="$set_C" CXX="$set_C" HOSTCC="$set_HOSTC" HOSTCXX="$set_HOSTC" $MAKE_ARGS $MAKE_ARGS -j$(nproc)
 
 
 
@@ -193,8 +193,8 @@ else
     exit 1
 fi
 
-#echo "Generating [out/arch/arm64/boot/dtb]......"
-#find out/arch/arm64/boot/dts -name '*.dtb' -exec cat {} + >out/arch/arm64/boot/dtb
+echo "Generating [out/arch/arm64/boot/dtb]......"
+find out/arch/arm64/boot/dts -name '*.dtb' -exec cat {} + >out/arch/arm64/boot/dtb
 
 
 
@@ -207,18 +207,15 @@ if [ $KSU_ENABLE -eq 1 ]; then
     cd out/arch/arm64/boot/
     wget -nv -O patch_linux https://github.com/mmxdxmm/SukiSU_KernelPatch_patch/releases/download/v0.12.0/patch_linux
     chmod +x patch_linux
-    mv Image Image.bak
-    mv Image-dtb Image
     ./patch_linux
-    rm Image
-    mv Image.bak Image
-    mv oImage Image-dtb
+    mv Image Image.bak
+    mv oImage Image
     cd -
 fi
 
-cp out/arch/arm64/boot/Image-dtb anykernel/
-#cp out/arch/arm64/boot/dtb anykernel/
-#cp out/arch/arm64/boot/dtbo.img anykernel/
+cp out/arch/arm64/boot/Image anykernel/
+cp out/arch/arm64/boot/dtb anykernel/
+cp out/arch/arm64/boot/dtbo.img anykernel/
 
 echo "Build finished."
 

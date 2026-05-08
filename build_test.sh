@@ -8,7 +8,7 @@ if [ -f "clang.tar.gz" ]; then
     yes | tar -xvf clang.tar.gz -C clang
 else
     echo "文件不存在，正在下载..."
-    wget -nv -O clang.tar.gz "https://github.com/mmxdxmm/aosp-clang/releases/download/r563880c/clang-r563880c.tar.gz"
+    wget -nv -O clang.tar.gz "https://github.com/ZyCromerZ/Clang/releases/download/20.0.0git-20250129-release/Clang-20.0.0git-20250129.tar.gz"
     if [ $? -eq 0 ]; then
         echo "下载完成，正在解压..."
         yes | tar -xvf clang.tar.gz -C clang
@@ -17,10 +17,12 @@ else
     fi
 fi
 
-#yes | tar -xvf electron-binutils-2.41.tar.xz
+git clone https://github.com/LineageOS/android_prebuilts_gcc_linux-x86_aarch64_aarch64-linux-android-4.9 aarch64-linux-android-4.9
+git clone https://github.com/LineageOS/android_prebuilts_gcc_linux-x86_arm_arm-linux-androideabi-4.9 arm-linux-androideabi-4.9
 yes | unzip change.zip
 TOOLCHAIN_PATH=$PWD/clang/bin
-#BINUTILS_PATH=$PWD/electron-binutils-2.41/bin
+BINUTILS_PATH1=$PWD/aarch64-linux-android-4.9/bin
+BINUTILS_PATH2=$PWD/arm-linux-androideabi-4.9/bin
 GIT_COMMIT_ID="mmxdxmm"
 
 TARGET_DEVICE=$1
@@ -45,7 +47,7 @@ if [ ! -d $TOOLCHAIN_PATH ]; then
 fi
 
 echo "TOOLCHAIN_PATH: [$TOOLCHAIN_PATH]"
-export PATH="$TOOLCHAIN_PATH:$PATH"
+export PATH="$BINUTILS_PATH1:$BINUTILS_PATH2:$TOOLCHAIN_PATH:$PATH"
 
 
 # Enable ccache for speed up compiling 
@@ -54,11 +56,11 @@ export PATH="/usr/lib/ccache:$PATH"
 echo "CCACHE_DIR: [$CCACHE_DIR]"
 
 
-MAKE_ARGS="ARCH=arm64 SUBARCH=arm64 O=out LVM=1 LLVM_IAS=1 AR=llvm-ar NM=llvm-nm STRIP=llvm-strip OBJCOPY=llvm-objcopy OBJDUMP=llvm-objdump HOSTAR=llvm-ar"
-set_C="ccache clang --target=aarch64-linux-gnu -O3 -march=armv8.2-a+lse+crypto+dotprod -mcpu=cortex-a77 -flto=thin -Wno-error -ffunction-sections -fdata-sections"
-set_HOSTC="ccache clang -O3 -flto=thin -Wno-error -ffunction-sections -fdata-sections"
+MAKE_ARGS="ARCH=arm64 SUBARCH=arm64 O=out LLVM=1 LLVM_IAS=1 AR=llvm-ar NM=llvm-nm STRIP=llvm-strip OBJCOPY=llvm-objcopy OBJDUMP=llvm-objdump HOSTAR=llvm-ar CROSS_COMPILE=aarch64-linux-gnu- CROSS_COMPILE_COMPAT=arm-linux-gnueabi-"
+set_C="ccache clang -O3 --target=aarch64-linux-gnu -march=armv8.2-a+lse+crypto+dotprod -mcpu=cortex-a77 -flto=thin -Wno-error -ffunction-sections -fdata-sections"
+set_HOSTC="ccache clang -O3 -Wno-error -ffunction-sections -fdata-sections"
 set_LD="ld.lld --strip-debug -O3 --plugin-opt=O3"
-set_HOSTLD="ld.lld --strip-debug --gc-sections -O3 --plugin-opt=O3"
+set_HOSTLD="ld.lld --strip-debug --gc-sections -O3"
 
 
 if [ "$1" == "j1" ]; then

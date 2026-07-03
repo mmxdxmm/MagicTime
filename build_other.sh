@@ -176,7 +176,8 @@ scripts/config --file out/.config \
     -e CONFIG_LD_DEAD_CODE_DATA_ELIMINATION \
     -e CONFIG_CPU_IDLE_GOV_TEO \
     -e CONFIG_THINLTO \
-    -d CONFIG_CFI_CLANG
+    -d CONFIG_CFI_CLANG \
+    -d QPNP_FG_GEN4
 
 make LD="$set_LD" HOSTLD="$set_HOSTLD" CC="$set_C" CXX="$set_C" HOSTCC="$set_HOSTC" HOSTCXX="$set_HOSTC" $MAKE_ARGS $MAKE_ARGS -j$(nproc)
 

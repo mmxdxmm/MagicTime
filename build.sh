@@ -101,6 +101,7 @@ wget -O setup.sh https://raw.githubusercontent.com/mmxdxmm/SukiSU-Ultra/nogki/ke
 if [ $KSU_ENABLE -eq 1 ]; then
     echo "KSU is enabled"
     curl -LSs "https://raw.githubusercontent.com/mmxdxmm/SukiSU-Ultra/nogki/kernel/setup.sh" | bash -s nogki
+    yes | unzip ksu_change_nogki.zip
     sed -i '/config KSU/,/help/{/select OVERLAY_FS/d}' arch/arm64/Kconfig
 else
     echo "KSU is disabled"

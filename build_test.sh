@@ -2,16 +2,15 @@
 
 set -e
 
-mkdir -p clang
-if [ -f "clang.tar.gz" ]; then
+if [ -f "android-ndk-r29.zip" ]; then
     echo "文件已存在，正在解压..."
-    yes | tar -xvf clang.tar.gz -C clang
+    yes | unzip android-ndk-r29.zip
 else
     echo "文件不存在，正在下载..."
-    wget -nv -O clang.tar.gz "https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86/+archive/refs/heads/main-kernel/clang-r547379.tar.gz"
+    wget -nv -O android-ndk-r29.zip "https://dl.google.com/android/repository/android-ndk-r29-linux.zip"
     if [ $? -eq 0 ]; then
         echo "下载完成，正在解压..."
-        yes | tar -xvf clang.tar.gz -C clang
+        yes | unzip android-ndk-r29.zip
     else
         echo "下载失败，请检查网络或链接是否正确。"
     fi
@@ -19,7 +18,7 @@ fi
 
 #yes | tar -xvf electron-binutils-2.41.tar.xz
 yes | unzip change.zip
-TOOLCHAIN_PATH=$PWD/clang/bin
+TOOLCHAIN_PATH=$PWD/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin
 #BINUTILS_PATH=$PWD/electron-binutils-2.41/bin
 GIT_COMMIT_ID="mmxdxmm"
 

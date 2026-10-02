@@ -1,4 +1,4 @@
-name: Build cmi ksu
+name: Build test
 
 on:
   workflow_dispatch:  # Manual trigger only
@@ -16,9 +16,16 @@ jobs:
           sudo apt update && sudo apt install build-essential git curl wget bison flex zip bc cpio libssl-dev ccache lz4 gcc-aarch64-linux-gnu gcc-arm-linux-gnueabi -y
 # && sudo apt upgrade -y
 
+#      LLVM-22 installation (commented out)
+#      - name: Download and Install LLVM
+#        run: |
+#          wget https://apt.llvm.org/llvm.sh -O llvm.sh
+#          chmod +x llvm.sh
+#          sudo ./llvm.sh 22
+
       - name: Build Kernel
         run: |
-          bash build.sh cmi ksu > out.txt
+          bash build_test.sh cmi ksu | tee out.txt
           [ -f out/.config ] && cp out/.config config.txt
 
       - name: Upload Artifacts

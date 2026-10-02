@@ -115,7 +115,7 @@ rm -rf out/
 rm -rf anykernel/
 
 echo "Clone AnyKernel3 for packing kernel (repo: https://github.com/mmxdxmm/AnyKernel3)"
-git clone https://github.com/mmxdxmm/AnyKernel3 -b main --single-branch --depth=1 anykernel
+git clone https://github.com/mmxdxmm/AnyKernel3 -b kona --single-branch --depth=1 anykernel
 
 # Add date to local version
 #local_version_str="-perf"
@@ -178,8 +178,7 @@ scripts/config --file out/.config \
     -e CONFIG_LD_DEAD_CODE_DATA_ELIMINATION \
     -e CONFIG_CPU_IDLE_GOV_TEO \
     -e CONFIG_THINLTO \
-    -d CONFIG_CFI_CLANG \
-    -d QPNP_FG_GEN4
+    -d CONFIG_CFI_CLANG
 
 make LD="$set_LD" HOSTLD="$set_HOSTLD" CC="$set_C" CXX="$set_C" HOSTCC="$set_HOSTC" HOSTCXX="$set_HOSTC" $MAKE_ARGS $MAKE_ARGS -j$(nproc)
 
@@ -197,9 +196,8 @@ find out/arch/arm64/boot/dts -name '*.dtb' -exec cat {} + >out/arch/arm64/boot/d
 
 
 
-rm -rf anykernel/Image*
-rm -rf anykernel/dtb
-rm -rf anykernel/dtbo.img
+rm -rf anykernel/kernels/
+mkdir -p anykernel/kernels/
 
 # Patch for SukiSU KPM support. 
 if [ $KSU_ENABLE -eq 1 ]; then
@@ -212,9 +210,9 @@ if [ $KSU_ENABLE -eq 1 ]; then
     cd -
 fi
 
-cp out/arch/arm64/boot/Image anykernel/
-cp out/arch/arm64/boot/dtb anykernel/
-cp out/arch/arm64/boot/dtbo.img anykernel/
+cp out/arch/arm64/boot/Image anykernel/kernels/
+cp out/arch/arm64/boot/dtb anykernel/kernels/
+cp out/arch/arm64/boot/dtbo.img anykernel/kernels/
 
 echo "Build finished."
 
